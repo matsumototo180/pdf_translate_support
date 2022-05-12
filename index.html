@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>論文PDF翻訳補助</title>
+</head>
+
+<body>
+    <h1>論文PDF翻訳補助</h1>
+    <p>PDF形式の論文を機械翻訳を利用して読むための支援ツール<br>Chrome等のブラウザの翻訳機能を使うことで原文と翻訳文を対照しながら読むことができます</p>
+    <form action="/upload/" method="post" id="form" enctype="multipart/form-data" onchange="">
+        <input type="file" name="file" id="upload" accept="application/pdf" onchange="">
+    </form>
+    <script>
+        document.getElementById("upload").addEventListener("change", (e) => {
+            if (e.target.files[0].size >= 10 ** 7) {
+                alert("ファイルサイズは10MB以下である必要があります");
+                e.target.value = "";
+                return;
+            }
+            document.getElementById("form").submit();
+            e.target.disabled = true;
+            document.body.append('処理を実行中です。しばらくお待ちください。');
+        })
+    </script>
+</body>
+
+</html>
