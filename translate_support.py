@@ -19,7 +19,7 @@ def duplicate_sbs(soup, element):
 
 def pdf2html2col(file):    
     tmpdir = tempfile.TemporaryDirectory()
-    file_path = f'{tmpdir.name}/{file.filename}'
+    file_path = f'{tmpdir.name}/file.pdf'
 
     with open(file_path, 'w+b') as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -30,9 +30,10 @@ def pdf2html2col(file):
     client.process("processFulltextDocument", tmpdir.name, tmpdir.name)
 
     tei = [os.path.join(tmpdir.name, path) for path in os.listdir(tmpdir.name) if os.path.splitext(path)[1] == ".xml"]
+    print(tei)
     path_inout = [(i, os.path.join(tmpdir.name, os.path.splitext(i)[0] + '.html')) for i in tei]
-    proc = [subprocess.run(f"teitohtml5 '{path[0]}' '{path[1]}'", shell=True, stdout=PIPE, stderr=PIPE) for path in path_inout]
-    [print(f"teitohtml5 '{path[0]}' '{path[1]}'") for path in path_inout]
+    proc = [subprocess.run(f'teitohtml5 "{path[0]}" "{path[1]}"', shell=True, stdout=PIPE, stderr=PIPE) for path in path_inout]
+    [print(f'teitohtml5 "{path[0]}" "{path[1]}"') for path in path_inout]
 
     os.listdir(tmpdir.name)
 
@@ -50,6 +51,8 @@ def pdf2html2col(file):
     targets = [title] + [toc] + sum([b.contents for b in body], []) + list(figure) + sum([e.contents for e in etc], [])
 
     for target in targets:
+        if target is None:
+            continue
         translate_target = copy.copy(target)
         target.replace_with(duplicate_sbs(soup, translate_target))
 
