@@ -12,7 +12,7 @@ def duplicate_for_translate(soup, element):
     container = soup.new_tag("div", attrs={"class": "float-container"})
     left = soup.new_tag("div", attrs={"class": "float-child", "translate": "no"})
     left.append(element)
-    right = soup.new_tag("div", attrs={"class": "float-child"})
+    right = soup.new_tag("div", attrs={"class": "float-child", "contenteditable": "true"})
     right.append(copy.copy(element))
     container.append(left)
     container.append(right)
@@ -50,7 +50,12 @@ def pdf2html2col(file):
         translate_target = copy.copy(target)
         target.replace_with(duplicate_for_translate(soup, translate_target))
 
-    soup.find(class_="references")["translate"] = "no"
+    references = soup.find(class_="references")
+    references["translate"] = "no"
+
+    anchors = soup.find_all("a")
+    for anchor in anchors:
+        anchor["contenteditable"] = "false"
 
     soup.head.append(soup.new_tag('style'))
     soup.head.style.append('''
